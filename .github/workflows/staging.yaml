@@ -1,0 +1,21 @@
+name: "build & push docker image"
+on:
+  push:
+    branches:
+      - "master"
+jobs:
+  build-push-docker:
+    name: "build image and push registry dockerhub"
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@v2
+      - name: build image
+        run: docker build -t xxrunexx/hugosite:latest .
+      - name: login dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: push image to dockerhub
+        run: docker push xxrunexx/hugosite:latest
